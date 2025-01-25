@@ -21,6 +21,7 @@ function initGame(){
     boxes.forEach((box, index) => {
         box.innerText ="";
         boxes[index].style.pointerEvents = "all";
+        boxes[index].classList.remove("win");
     });
     newGameBtn.classList.remove('active');
     gameInfo.textContent = `Current Player - ${currentPlayer}`;
@@ -54,7 +55,41 @@ function handleClick(index){
     }
 }
 function checkWin(){
-    newGameBtn.classList.add("active");
+    let answer = "";
+    winningPosition.forEach((position) => {
+        if ((gameGrid[position[0]] != "" || gameGrid[position[1]] != "" ||gameGrid[position[2]] != "")
+            && (gameGrid[position[0]] == gameGrid[position[1]] && gameGrid[position[1]] == gameGrid[position[2]])) {
+            
+                if(gameGrid[position[0]] == "X")
+                    answer = "X";
+                else
+                    answer = "0";
+
+                boxes.forEach((box) => {
+                    box.style.pointerEvents = "none";
+                });
+                boxes[position[0]].classList.add("win");
+                boxes[position[1]].classList.add("win");
+                boxes[position[2]].classList.add("win");
+        }
+    })
+
+    if(answer != ""){
+        gameInfo.textContent = `Winner is ${answer} 🎉`;
+        newGameBtn.classList.add("active");
+        return;
+    }
+
+    let fillCount = 0;
+    gameGrid.forEach((box) => {
+        if(box !== "")
+            fillCount++;
+    })
+    // Game Tied
+    if(fillCount == 9){
+        gameInfo.innerText = "Game Tied!";
+        newGameBtn.classList.add("active");
+    }
 }
 
 newGameBtn.addEventListener('click', initGame);
